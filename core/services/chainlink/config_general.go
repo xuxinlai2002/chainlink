@@ -66,6 +66,9 @@ type GeneralConfigOpts struct {
 }
 
 func (o *GeneralConfigOpts) Setup(configFiles []string, secretsFiles []string) error {
+
+	fmt.Printf("xxl Setup %v \n", configFiles)
+
 	configs := []string{}
 	for _, fileName := range configFiles {
 		b, err := os.ReadFile(fileName)
@@ -97,6 +100,8 @@ func (o *GeneralConfigOpts) Setup(configFiles []string, secretsFiles []string) e
 // parseConfig sets Config from the given TOML string, overriding any existing duplicate Config fields.
 func (o *GeneralConfigOpts) parseConfig(config string) error {
 	var c Config
+	fmt.Printf("xxl config %v \n", config)
+
 	if err2 := commonconfig.DecodeTOML(strings.NewReader(config), &c); err2 != nil {
 		return fmt.Errorf("failed to decode config TOML: %w", err2)
 	}

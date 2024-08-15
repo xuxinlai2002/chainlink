@@ -203,6 +203,8 @@ func ginHandlerFromHTTP(h http.HandlerFunc) gin.HandlerFunc {
 }
 
 func sessionRoutes(app chainlink.Application, r *gin.RouterGroup) {
+
+	fmt.Printf("### xxl 0000 post sessionRoutes \n")
 	config := app.GetConfig()
 	rl := config.WebServer().RateLimit()
 	unauth := r.Group("/", rateLimiter(

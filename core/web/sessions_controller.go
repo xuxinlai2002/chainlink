@@ -28,6 +28,8 @@ func NewSessionsController(app chainlink.Application) *SessionsController {
 // Create creates a session ID for the given user credentials, and returns it
 // in a cookie.
 func (sc *SessionsController) Create(c *gin.Context) {
+
+	fmt.Printf("xxl 0001\n")
 	defer sc.App.WakeSessionReaper()
 	ctx := c.Request.Context()
 	sc.App.GetLogger().Debugf("TRACE: Starting Session Creation")
@@ -39,6 +41,7 @@ func (sc *SessionsController) Create(c *gin.Context) {
 		return
 	}
 
+	fmt.Printf("xxl 0002\n")
 	// Does this user have 2FA enabled?
 	userWebAuthnTokens, err := sc.App.AuthenticationProvider().GetUserWebAuthn(ctx, sr.Email)
 	if err != nil {
@@ -47,6 +50,7 @@ func (sc *SessionsController) Create(c *gin.Context) {
 		return
 	}
 
+	fmt.Printf("xxl 0003\n")
 	// If the user has registered MFA tokens, then populate our session store and context
 	// required for successful WebAuthn authentication
 	if len(userWebAuthnTokens) > 0 {
@@ -54,17 +58,21 @@ func (sc *SessionsController) Create(c *gin.Context) {
 		sr.WebAuthnConfig = sc.App.GetWebAuthnConfiguration()
 	}
 
+	fmt.Printf("xxl 0004\n")
 	sid, err := sc.App.AuthenticationProvider().CreateSession(ctx, sr)
+	fmt.Printf("xxl 0004 sid %v - err %v \n", sid, err)
 	if err != nil {
 		jsonAPIError(c, http.StatusUnauthorized, err)
 		return
 	}
 
+	fmt.Printf("xxl 0005\n")
 	if err := saveSessionID(session, sid); err != nil {
 		jsonAPIError(c, http.StatusInternalServerError, multierr.Append(errors.New("unable to save session id"), err))
 		return
 	}
 
+	fmt.Printf("xxl 0006\n")
 	jsonAPIResponse(c, Session{Authenticated: true}, "session")
 }
 

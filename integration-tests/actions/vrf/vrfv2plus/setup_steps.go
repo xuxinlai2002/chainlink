@@ -84,6 +84,7 @@ func SetupVRFV2_5Environment(
 	numberOfTxKeysToCreate int,
 	l zerolog.Logger,
 ) (*vrfcommon.VRFContracts, *vrfcommon.VRFKeyData, map[vrfcommon.VRFNodeType]*vrfcommon.VRFNode, error) {
+	fmt.Printf("xxl 0000 SetupVRFV2_5Environment setup \n")
 	l.Info().Msg("Starting VRFV2 Plus environment setup")
 	configGeneral := vrfv2PlusTestConfig.GetVRFv2PlusConfig().General
 	vrfContracts, err := SetupVRFV2PlusContracts(
@@ -99,10 +100,12 @@ func SetupVRFV2_5Environment(
 	}
 
 	nodeTypeToNodeMap, err := vrfcommon.CreateNodeTypeToNodeMap(env.ClCluster, nodesToCreate)
+	fmt.Printf("xxl 0000 SetupVRFV2_5Environment nodeTypeToNodeMap %v \n", nodeTypeToNodeMap)
 	if err != nil {
 		return nil, nil, nil, err
 	}
 	vrfKey, pubKeyCompressed, err := vrfcommon.CreateVRFKeyOnVRFNode(nodeTypeToNodeMap[vrfcommon.VRF], l)
+	fmt.Printf("xxl 0000 SetupVRFV2_5Environment CreateVRFKeyOnVRFNode %v \n", vrfKey)
 	if err != nil {
 		return nil, nil, nil, err
 	}
@@ -220,6 +223,7 @@ func setupVRFNode(contracts *vrfcommon.VRFContracts, chainID *big.Int, config *v
 		VRFOwnerConfig:                nil,
 	}
 
+	fmt.Printf("xxl 0000 setupVRFNode %v \n ", vrfJobSpecConfig)
 	l.Info().Msg("Creating VRFV2 Plus Job")
 	job, err := CreateVRFV2PlusJob(
 		vrfNode.CLNode.API,
@@ -368,11 +372,13 @@ func SetupVRFV2PlusUniverse(
 		err            error
 	)
 	if *envConfig.TestConfig.VRFv2Plus.General.UseExistingEnv {
+		fmt.Printf("xxl 0000 SetupVRFV2PlusUniverse  SetupVRFV2PlusForExistingEnv ")
 		vrfContracts, vrfKey, env, err = SetupVRFV2PlusForExistingEnv(t, envConfig, l)
 		if err != nil {
 			return nil, nil, nil, nil, fmt.Errorf("%s, err: %w", "Error setting up VRF V2 Plus for Existing env", err)
 		}
 	} else {
+		fmt.Printf("xxl 0001 SetupVRFV2PlusUniverse  SetupVRFV2PlusForNewEnv \n")
 		vrfContracts, vrfKey, env, nodeTypeToNode, err = SetupVRFV2PlusForNewEnv(ctx, t, envConfig, newEnvConfig, l)
 		if err != nil {
 			return nil, nil, nil, nil, fmt.Errorf("%s, err: %w", "Error setting up VRF V2 Plus for New env", err)
@@ -389,22 +395,29 @@ func SetupVRFV2PlusForNewEnv(
 	l zerolog.Logger,
 ) (*vrfcommon.VRFContracts, *vrfcommon.VRFKeyData, *test_env.CLClusterTestEnv, map[vrfcommon.VRFNodeType]*vrfcommon.VRFNode, error) {
 	network, err := actions.EthereumNetworkConfigFromConfig(l, &envConfig.TestConfig)
+
+	fmt.Printf("xxl 0000 SetupVRFV2PlusForNewEnv network %v \n", network)
 	if err != nil {
 		return nil, nil, nil, nil, fmt.Errorf("%s, err: %w", "Error building ethereum network config for V2Plus", err)
 	}
 	env, err := vrfcommon.BuildNewCLEnvForVRF(t, envConfig, newEnvConfig, network)
+	fmt.Printf("xxl 0001 SetupVRFV2PlusForNewEnv env %v \n", env)
 	if err != nil {
 		return nil, nil, nil, nil, err
 	}
 	sethClient, err := env.GetSethClient(envConfig.ChainID)
+	fmt.Printf("xxl 0001.5 GetSethClient env %v \n", env)
 	if err != nil {
 		return nil, nil, nil, nil, err
 	}
+
 	mockETHLinkFeed, err := contracts.DeployVRFMockETHLINKFeed(sethClient, big.NewInt(*envConfig.TestConfig.VRFv2Plus.General.LinkNativeFeedResponse))
+	fmt.Printf("xxl 0002 SetupVRFV2PlusForNewEnv env %v \n", mockETHLinkFeed)
 	if err != nil {
 		return nil, nil, nil, nil, fmt.Errorf("%s, err: %w", "error deploying mock ETH/LINK feed", err)
 	}
 	linkToken, err := contracts.DeployLinkTokenContract(l, sethClient)
+	fmt.Printf("xxl 0003 DeployLinkTokenContract env %v \n", linkToken)
 	if err != nil {
 		return nil, nil, nil, nil, fmt.Errorf("%s, err: %w", "error deploying LINK contract", err)
 	}

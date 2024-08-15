@@ -202,10 +202,14 @@ func (s *Secrets) TOMLString() (string, error) {
 	return string(b), nil
 }
 
-var ErrInvalidSecrets = errors.New("invalid secrets")
+var ErrInvalidSecrets = errors.New("invalid secrets ")
 
 // Validate validates every consitutent secret and return an accumulated error
 func (s *Secrets) Validate() error {
+
+	//*s.Password.VRF = "123"
+	//*s.Password.Keystore = "123"
+	fmt.Printf("xxl commonconfig.Validate %s \n", s.Database)
 	if err := commonconfig.Validate(s); err != nil {
 		return fmt.Errorf("%w: %s", ErrInvalidSecrets, err)
 	}

@@ -26,6 +26,7 @@ var (
 )
 
 func init() {
+
 	fes, err := defaultsFS.ReadDir("defaults")
 	if err != nil {
 		log.Fatalf("failed to read defaults/: %v", err)

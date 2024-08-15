@@ -411,6 +411,8 @@ func (n ClNode) GetNodeConfigStr() (string, error) {
 
 func (n *ClNode) getContainerRequest(secrets string) (
 	*tc.ContainerRequest, error) {
+
+	fmt.Printf("xxl 0000 getContainerRequest \n")
 	configFile, err := os.CreateTemp("", "node_config")
 	if err != nil {
 		return nil, err
@@ -457,6 +459,7 @@ func (n *ClNode) getContainerRequest(secrets string) (
 	adminCredsPath := "/home/admin-credentials.txt"
 	apiCredsPath := "/home/api-credentials.txt"
 
+	fmt.Printf("xxl 0001 getContainerRequest %v - %v \n", n.ContainerName, n.ContainerEnvs)
 	return &tc.ContainerRequest{
 		Name:            n.ContainerName,
 		AlwaysPullImage: n.AlwaysPullImage,

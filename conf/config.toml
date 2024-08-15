@@ -1,0 +1,10 @@
+[[EVM]]
+ChainID = '97'
+MinIncomingConfirmations = 1
+MinContractPayment = '0.000001 link'
+
+[[EVM.Nodes]]
+Name = 'bsc'
+WSURL = 'wss://go.getblock.io/d7e31d6e701e4b38a5260761ffc579a2'
+HTTPURL = 'https://go.getblock.io/481c78250c4848faa5280057c0c6143d'
+

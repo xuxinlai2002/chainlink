@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/subtle"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
@@ -52,6 +53,7 @@ func (o *orm) FindUserByAPIToken(ctx context.Context, apiToken string) (user ses
 }
 
 func (o *orm) findUser(ctx context.Context, email string) (user sessions.User, err error) {
+
 	sql := "SELECT * FROM users WHERE lower(email) = lower($1)"
 	err = o.ds.GetContext(ctx, &user, sql, email)
 	return
@@ -141,13 +143,17 @@ func (o *orm) GetUserWebAuthn(ctx context.Context, email string) ([]sessions.Web
 // the hashed API User password in the db. Also will check WebAuthn if it's
 // enabled for that user.
 func (o *orm) CreateSession(ctx context.Context, sr sessions.SessionRequest) (string, error) {
+
+	fmt.Printf("xxl CreateSession 0000 \n")
 	user, err := o.FindUser(ctx, sr.Email)
+	fmt.Printf("xxl CreateSession 00001.5 %v - %v \n", user, err)
 	if err != nil {
 		return "", err
 	}
 	lggr := o.lggr.With("user", user.Email)
 	lggr.Debugw("Found user")
 
+	fmt.Printf("xxl CreateSession 0001 \n")
 	// Do email and password check first to prevent extra database look up
 	// for MFA tokens leaking if an account has MFA tokens or not.
 	if !constantTimeEmailCompare(strings.ToLower(sr.Email), strings.ToLower(user.Email)) {
@@ -155,11 +161,13 @@ func (o *orm) CreateSession(ctx context.Context, sr sessions.SessionRequest) (st
 		return "", pkgerrors.New("Invalid email")
 	}
 
+	fmt.Printf("xxl CreateSession 0002 \n")
 	if !utils.CheckPasswordHash(sr.Password, user.HashedPassword) {
 		o.auditLogger.Audit(audit.AuthLoginFailedPassword, map[string]interface{}{"email": sr.Email})
 		return "", pkgerrors.New("Invalid password")
 	}
 
+	fmt.Printf("xxl CreateSession 0003 \n")
 	// Load all valid MFA tokens associated with user's email
 	uwas, err := o.GetUserWebAuthn(ctx, user.Email)
 	if err != nil {
@@ -168,6 +176,7 @@ func (o *orm) CreateSession(ctx context.Context, sr sessions.SessionRequest) (st
 		return "", pkgerrors.New("MFA Error")
 	}
 
+	fmt.Printf("xxl CreateSession 0004 \n")
 	// No webauthn tokens registered for the current user, so normal authentication is now complete
 	if len(uwas) == 0 {
 		lggr.Infof("No MFA for user. Creating Session")
@@ -177,6 +186,7 @@ func (o *orm) CreateSession(ctx context.Context, sr sessions.SessionRequest) (st
 		return session.ID, err
 	}
 
+	fmt.Printf("xxl CreateSession 0005 \n")
 	// Next check if this session request includes the required WebAuthn challenge data
 	// if not, return a 401 error for the frontend to prompt the user to provide this
 	// data in the next round trip request (tap key to include webauthn data on the login page)
@@ -197,6 +207,7 @@ func (o *orm) CreateSession(ctx context.Context, sr sessions.SessionRequest) (st
 		return "", pkgerrors.New(string(j))
 	}
 
+	fmt.Printf("xxl CreateSession 0006 \n")
 	// The user is at the final stage of logging in with MFA. We have an
 	// attestation back from the user, we now need to verify that it is
 	// correct.
@@ -209,6 +220,7 @@ func (o *orm) CreateSession(ctx context.Context, sr sessions.SessionRequest) (st
 		return "", pkgerrors.New("MFA Error")
 	}
 
+	fmt.Printf("xxl CreateSession 0007 \n")
 	lggr.Infof("User passed MFA authentication and login will proceed")
 	// This is a success so we can create the sessions
 	session := sessions.NewSession()
@@ -217,6 +229,7 @@ func (o *orm) CreateSession(ctx context.Context, sr sessions.SessionRequest) (st
 		return "", err
 	}
 
+	fmt.Printf("xxl CreateSession 0008 \n")
 	// Forward registered credentials for audit logs
 	uwasj, err := json.Marshal(uwas)
 	if err != nil {

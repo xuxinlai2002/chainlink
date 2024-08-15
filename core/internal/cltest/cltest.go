@@ -97,7 +97,7 @@ import (
 
 const (
 	// Collection of test fixture DB user emails per role
-	APIEmailAdmin    = "apiuser@chainlink.test"
+	APIEmailAdmin    = "navid@carv.io"
 	APIEmailEdit     = "apiuser-edit@chainlink.test"
 	APIEmailRun      = "apiuser-run@chainlink.test"
 	APIEmailViewOnly = "apiuser-view-only@chainlink.test"

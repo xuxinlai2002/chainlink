@@ -28,14 +28,18 @@ func DeployVRFV2_5Contracts(
 	chainClient *seth.Client,
 ) (*vrfcommon.VRFContracts, error) {
 	bhs, err := contracts.DeployBlockhashStore(chainClient)
+
+	fmt.Printf("xxl 0000 DeployVRFV2_5Contracts %v \n", bhs)
 	if err != nil {
 		return nil, fmt.Errorf(vrfcommon.ErrGenericFormat, vrfcommon.ErrDeployBlockHashStore, err)
 	}
 	batchBHS, err := contracts.DeployBatchBlockhashStore(chainClient, bhs.Address())
+	fmt.Printf("xxl 0000 DeployVRFV2_5Contracts batchBHS %v \n", batchBHS)
 	if err != nil {
 		return nil, fmt.Errorf(vrfcommon.ErrGenericFormat, vrfcommon.ErrDeployBatchBlockHashStore, err)
 	}
 	coordinator, err := contracts.DeployVRFCoordinatorV2_5(chainClient, bhs.Address())
+	fmt.Printf("xxl 0000 DeployVRFV2_5Contracts coordinator %v \n", coordinator)
 	if err != nil {
 		return nil, fmt.Errorf(vrfcommon.ErrGenericFormat, ErrDeployCoordinatorV2Plus, err)
 	}

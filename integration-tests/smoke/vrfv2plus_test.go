@@ -36,6 +36,7 @@ import (
 )
 
 func TestVRFv2Plus(t *testing.T) {
+
 	t.Parallel()
 	var (
 		env                          *test_env.CLClusterTestEnv
@@ -44,13 +45,19 @@ func TestVRFv2Plus(t *testing.T) {
 		vrfKey                       *vrfcommon.VRFKeyData
 		nodeTypeToNodeMap            map[vrfcommon.VRFNodeType]*vrfcommon.VRFNode
 	)
+
+	fmt.Printf("xxl 0000 vrfContracts %s \n", vrfContracts)
+
 	l := logging.GetTestLogger(t)
 
 	config, err := tc.GetConfig("Smoke", tc.VRFv2Plus)
+	fmt.Printf("xxl 0001 config : %v - vrfv2plus : %v \n", config, tc.VRFv2Plus)
+
 	require.NoError(t, err, "Error getting config")
 	vrfv2PlusConfig := config.VRFv2Plus
+	fmt.Printf("xxl 0002 vrfv2PlusConfig %v \n", vrfv2PlusConfig)
 	chainID := networks.MustGetSelectedNetworkConfig(config.GetNetworkConfig())[0].ChainID
-
+	fmt.Printf("xxl 0003 chainID %v \n", chainID)
 	cleanupFn := func() {
 		sethClient, err := env.GetSethClient(chainID)
 		require.NoError(t, err, "Getting Seth client shouldn't fail")
@@ -76,6 +83,8 @@ func TestVRFv2Plus(t *testing.T) {
 		ChainID:    chainID,
 		CleanupFn:  cleanupFn,
 	}
+	fmt.Printf("xxl 0004 vrfEnvConfig %v \n", vrfEnvConfig)
+
 	newEnvConfig := vrfcommon.NewEnvConfig{
 		NodesToCreate:                   []vrfcommon.VRFNodeType{vrfcommon.VRF},
 		NumberOfTxKeysToCreate:          0,
@@ -83,11 +92,19 @@ func TestVRFv2Plus(t *testing.T) {
 		UseTestCoordinator:              false,
 		ChainlinkNodeLogScannerSettings: test_env.DefaultChainlinkNodeLogScannerSettings,
 	}
+
+	fmt.Printf("xxl 0005 vrfEnvConfig %v \n", newEnvConfig)
+
 	env, vrfContracts, vrfKey, nodeTypeToNodeMap, err = vrfv2plus.SetupVRFV2PlusUniverse(testcontext.Get(t), t, vrfEnvConfig, newEnvConfig, l)
+	fmt.Printf("xxl 0005.5 vrfContracts %v \n", vrfContracts)
+
 	require.NoError(t, err, "Error setting up VRFv2Plus universe")
 
+	fmt.Printf("xxl 0006 vrfEnvConfig %v \n", vrfKey)
 	sethClient, err := env.GetSethClient(chainID)
+
 	require.NoError(t, err, "Getting Seth client shouldn't fail")
+	fmt.Printf("xxl 0007 vrfEnvConfig %v \n", vrfKey)
 
 	t.Run("Link Billing", func(t *testing.T) {
 		configCopy := config.MustCopy().(tc.TestConfig)

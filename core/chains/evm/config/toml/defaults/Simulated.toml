@@ -1,4 +1,4 @@
-ChainID = '1337'
+ChainID = '1338'
 FinalityDepth = 10
 MinIncomingConfirmations = 1
 MinContractPayment = '100'

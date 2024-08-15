@@ -247,10 +247,13 @@ func (b *CLTestEnvBuilder) WithEVMNetworkOptions(opts ...EVMNetworkOption) *CLTe
 }
 
 func (b *CLTestEnvBuilder) Build() (*CLClusterTestEnv, error) {
+
+	fmt.Printf("xxl 0000 Build ... \n")
 	if b.testConfig == nil {
 		return nil, fmt.Errorf("test config must be set")
 	}
 
+	fmt.Printf("xxl 0001 Build ... \n")
 	if b.te == nil {
 		var err error
 		b, err = b.WithTestEnv(nil)
@@ -261,11 +264,13 @@ func (b *CLTestEnvBuilder) Build() (*CLClusterTestEnv, error) {
 
 	b.te.TestConfig = b.testConfig
 
+	fmt.Printf("xxl 0002 Build ... \n")
 	var err error
 	if b.t != nil {
 		b.te.WithTestInstance(b.t)
 	}
 
+	fmt.Printf("xxl 0003 Build ... \n")
 	if b.hasLogStream {
 		loggingConfig := b.testConfig.GetLoggingConfig()
 		// we need to enable logging to file if we want to scan logs
@@ -277,7 +282,7 @@ func (b *CLTestEnvBuilder) Build() (*CLClusterTestEnv, error) {
 		if err != nil {
 			return nil, err
 		}
-
+		fmt.Printf("xxl 0004 Build ... \n")
 		// this clean up has to be added as the FIRST one, because cleanup functions are executed in reverse order (LIFO)
 		if b.t != nil && b.cleanUpType != CleanUpTypeNone {
 			b.t.Cleanup(func() {
@@ -338,6 +343,7 @@ func (b *CLTestEnvBuilder) Build() (*CLClusterTestEnv, error) {
 		}
 	}
 
+	fmt.Printf("xxl 0005 Build ... \n")
 	if b.hasKillgrave {
 		if b.te.DockerNetwork == nil {
 			return nil, fmt.Errorf("test environment builder failed: %w", fmt.Errorf("cannot start mock adapter without a network"))
@@ -357,6 +363,7 @@ func (b *CLTestEnvBuilder) Build() (*CLClusterTestEnv, error) {
 
 	switch b.cleanUpType {
 	case CleanUpTypeStandard:
+		fmt.Printf("xxl 0006 Build CleanUpTypeStandard... \n")
 		b.t.Cleanup(func() {
 			// Cleanup test environment
 			if err := b.te.Cleanup(CleanupOpts{TestName: b.t.Name()}); err != nil {
@@ -364,8 +371,10 @@ func (b *CLTestEnvBuilder) Build() (*CLClusterTestEnv, error) {
 			}
 		})
 	case CleanUpTypeCustom:
+		fmt.Printf("xxl 0007 Build CleanUpTypeCustom... \n")
 		b.t.Cleanup(b.cleanUpCustomFn)
 	case CleanUpTypeNone:
+		fmt.Printf("xxl 0008 Build CleanUpTypeNone... \n")
 		b.l.Warn().Msg("test environment won't be cleaned up")
 	case "":
 		return b.te, fmt.Errorf("test environment builder failed: %w", fmt.Errorf("explicit cleanup type must be set when building test environment"))
@@ -377,6 +386,8 @@ func (b *CLTestEnvBuilder) Build() (*CLClusterTestEnv, error) {
 
 	// in this case we will use the builder only to start chains, not the cluster, because currently we support only 1 network config per cluster
 	if len(b.privateEthereumNetworks) > 1 {
+
+		fmt.Printf("xxl 0009 Build privateEthereumNetworks... \n")
 		b.te.rpcProviders = make(map[int64]*test_env.RpcProvider)
 		b.te.EVMNetworks = make([]*blockchain.EVMNetwork, 0)
 		b.te.evmClients = make(map[int64]blockchain.EVMClient)
@@ -442,7 +453,10 @@ func (b *CLTestEnvBuilder) Build() (*CLClusterTestEnv, error) {
 	// Even if we explicitly declare that we want to run on a private network in the test.
 	// Keeping this a Kludge for now as SETH transition should change all of this anyway.
 	if len(b.privateEthereumNetworks) == 1 {
+		fmt.Printf("xxl 0010 Build privateEthereumNetworks... \n")
 		if networkConfig.Simulated {
+
+			fmt.Printf("xxl 0011 Build privateEthereumNetworks... \n")
 			// TODO here we should save the ethereum network config to te.Cfg, but it doesn't exist at this point
 			// in general it seems we have no methods for saving config to file and we only load it from file
 			// but I don't know how that config file is to be created or whether anyone ever done that
@@ -457,6 +471,7 @@ func (b *CLTestEnvBuilder) Build() (*CLClusterTestEnv, error) {
 
 			b.te.isSimulatedNetwork = true
 		} else { // Only start and connect to a private network if we are using a private simulated network
+			fmt.Printf("xxl 0012 Build privateEthereumNetworks... \n")
 			b.te.l.Warn().
 				Str("Network", networkConfig.Name).
 				Int64("Chain ID", networkConfig.ChainID).

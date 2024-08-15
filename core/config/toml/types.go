@@ -96,6 +96,9 @@ func (c *Core) SetFrom(f *Core) {
 }
 
 func (c *Core) ValidateConfig() (err error) {
+
+	fmt.Printf("xxl %v \n", *c.RootDir)
+
 	_, verr := parse.HomeDir(*c.RootDir)
 	if err != nil {
 		err = multierr.Append(err, configutils.ErrInvalid{Name: "RootDir", Value: true, Msg: fmt.Sprintf("Failed to expand RootDir. Please use an explicit path: %s", verr)})
@@ -231,6 +234,7 @@ func (p *Passwords) SetFrom(f *Passwords) (err error) {
 }
 
 func (p *Passwords) validateMerge(f *Passwords) (err error) {
+
 	if p.Keystore != nil && f.Keystore != nil {
 		err = multierr.Append(err, configutils.ErrOverride{Name: "Keystore"})
 	}

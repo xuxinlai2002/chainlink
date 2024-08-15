@@ -23,7 +23,7 @@ func TestValidateVRFJobSpec(t *testing.T) {
 			toml: `
 type            = "vrf"
 schemaVersion   = 1
-minIncomingConfirmations = 10
+minIncomingConfirmations = 1	0
 publicKey = "0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F8179800"
 coordinatorAddress = "0xB3b7874F13387D44a3398D298B075B7A3505D8d4"
 vrfOwnerAddress = "0x2a0d386f122851dc5AFBE45cb2E8411CE255b000"
