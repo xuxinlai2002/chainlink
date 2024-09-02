@@ -265,6 +265,8 @@ contract VRFCoordinatorV2_5 is VRF, SubscriptionAPI, IVRFCoordinatorV2Plus {
       req.requestConfirmations < s_config.minimumRequestConfirmations ||
       req.requestConfirmations > MAX_REQUEST_CONFIRMATIONS
     ) {
+
+      require(false,"MAX_REQUEST_CONFIRMATIONS ");
       revert InvalidRequestConfirmations(
         req.requestConfirmations,
         s_config.minimumRequestConfirmations,
@@ -275,6 +277,7 @@ contract VRFCoordinatorV2_5 is VRF, SubscriptionAPI, IVRFCoordinatorV2Plus {
     // and they would simply be billed for the proof verification and wouldn't be
     // able to do anything with the random value.
     if (req.callbackGasLimit > s_config.maxGasLimit) {
+
       revert GasLimitTooBig(req.callbackGasLimit, s_config.maxGasLimit);
     }
     if (req.numWords > MAX_NUM_WORDS) {

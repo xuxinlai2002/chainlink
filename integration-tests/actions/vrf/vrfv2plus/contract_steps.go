@@ -77,6 +77,8 @@ func VRFV2_5RegisterProvingKey(
 	if err != nil {
 		return vrfcommon.VRFEncodedProvingKey{}, fmt.Errorf(vrfcommon.ErrGenericFormat, vrfcommon.ErrEncodingProvingKey, err)
 	}
+
+	fmt.Printf("xxl VRFV2_5RegisterProvingKey abc :%v - %v", gasLaneMaxGas, provingKey)
 	err = coordinator.RegisterProvingKey(
 		provingKey,
 		gasLaneMaxGas,

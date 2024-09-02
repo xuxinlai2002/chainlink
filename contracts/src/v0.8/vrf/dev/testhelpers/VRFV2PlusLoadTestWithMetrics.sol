@@ -108,7 +108,12 @@ contract VRFV2PlusLoadTestWithMetrics is VRFConsumerBaseV2Plus {
         fulfilmentBlockNumber: 0
       });
       s_requestCount++;
+   
+   
+   
     }
+
+
   }
 
   function reset() external {

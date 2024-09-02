@@ -3,6 +3,7 @@ import '@nomicfoundation/hardhat-verify'
 import '@nomicfoundation/hardhat-chai-matchers'
 import '@typechain/hardhat'
 import 'hardhat-abi-exporter'
+import "@nomicfoundation/hardhat-verify";
 import { subtask } from 'hardhat/config'
 import { TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS } from 'hardhat/builtin-tasks/task-names'
 
@@ -55,6 +56,27 @@ let config = {
       ),
       hardfork: 'merge',
     },
+
+    arbitrumSepolia: {
+      url: `https://sepolia-rollup.arbitrum.io/rpc`,
+      chainId: 421614,
+      accounts:
+        [
+          process.env.PRIVATE_KEY
+        ],
+      allowUnlimitedContractSize: true,
+    },
+
+    arbitrumOne: {
+      url: `https://arb1.arbitrum.io/rpc`,
+      chainId: 42161,
+      accounts:
+        [
+          process.env.PRIVATE_KEY
+        ],
+      allowUnlimitedContractSize: true,
+    },
+
   },
   solidity: {
     compilers: [
@@ -103,17 +125,29 @@ let config = {
     forbidOnly: Boolean(process.env.CI),
   },
   warnings: !process.env.HIDE_WARNINGS,
+
+  sourcify: {
+    enabled: true
+  },
+
+  etherscan: {
+    apiKey: {
+      arbitrumSepolia: "DHZDN4JKE82N3DVJREKNHRD4JPCCUN7E6N",
+    },
+
+  }
+
 }
 
-if (process.env.NETWORK_NAME && process.env.EXPLORER_API_KEY) {
-  config = {
-    ...config,
-    etherscan: {
-      apiKey: {
-        [process.env.NETWORK_NAME]: process.env.EXPLORER_API_KEY,
-      },
-    },
-  }
-}
+// if (process.env.NETWORK_NAME && process.env.EXPLORER_API_KEY) {
+//   config = {
+//     ...config,
+//     etherscan: {
+//       apiKey: {
+//         [process.env.NETWORK_NAME]: process.env.EXPLORER_API_KEY,
+//       },
+//     },
+//   }
+// }
 
 export default config

@@ -1,0 +1,48 @@
+[Feature]
+LogPoller = true
+
+[Database]
+MaxIdleConns = 20
+MaxOpenConns = 40
+MigrateOnStartup = true
+
+[Log]
+Level = 'debug'
+JSONConsole = true
+
+[Log.File]
+MaxSize = '0b'
+
+[WebServer]
+AllowOrigins = '*'
+HTTPPort = 6688
+SecureCookies = false
+
+[WebServer.RateLimit]
+Authenticated = 2000
+Unauthenticated = 100
+
+[WebServer.TLS]
+HTTPSPort = 0
+
+[[EVM]]
+ChainID = '421614'
+AutoCreateKey = false
+FinalityDepth = 1
+MinContractPayment = '0'
+
+[EVM.GasEstimator]
+PriceMax = '5 gwei'
+LimitDefault = 6000000
+FeeCapDefault = '5 gwei'
+
+[[EVM.KeySpecific]]
+Key = '0xe0890c0126708C4F0A383507728Be39a8A4B9F27'
+
+[EVM.KeySpecific.GasEstimator]
+PriceMax = '10 gwei'
+
+[[EVM.Nodes]]
+Name = 'Arbitrum Sepolia'
+WSURL = 'wss://arb-sepolia.g.alchemy.com/v2/o4YyrpDeBFdYoDyFTumfH_8mbCQon0JA'
+HTTPURL = 'https://arb-sepolia.g.alchemy.com/v2/o4YyrpDeBFdYoDyFTumfH_8mbCQon0JA'

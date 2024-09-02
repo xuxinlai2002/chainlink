@@ -6,6 +6,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
+    "scripts": "npx hardhat run ",
     "test": "hardhat test --parallel",
     "lint": "eslint --ext js,ts .",
     "prettier:check": "prettier '**/*' --check --ignore-unknown",

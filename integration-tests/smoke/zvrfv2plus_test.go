@@ -9,11 +9,10 @@ import (
 	"github.com/smartcontractkit/chainlink/integration-tests/actions/vrf/vrfv2plus"
 	"github.com/smartcontractkit/chainlink/integration-tests/docker/test_env"
 	tc "github.com/smartcontractkit/chainlink/integration-tests/testconfig"
+	"github.com/stretchr/testify/require"
 	"math/big"
 	"testing"
 	"time"
-
-	"github.com/stretchr/testify/require"
 )
 
 func TestVRFv2PlusM(t *testing.T) {
@@ -97,7 +96,7 @@ func TestVRFv2PlusM(t *testing.T) {
 	fmt.Printf("xxl 0009 vrfEnvConfig %v \n", newEnvConfig)
 
 	env, vrfContracts, vrfKey, nodeTypeToNodeMap, err = vrfv2plus.SetupVRFV2PlusUniverse(testcontext.Get(t), t, vrfEnvConfig, newEnvConfig, l)
-	fmt.Printf("xxl 0010 vrfContracts %v \n", vrfContracts)
+	fmt.Printf("xxl 0010 vrfContracts %v - %v \n", vrfContracts, nodeTypeToNodeMap[vrfcommon.VRF].Job.Data.ID)
 
 	require.NoError(t, err, "Error setting up VRFv2Plus universe")
 
@@ -108,7 +107,7 @@ func TestVRFv2PlusM(t *testing.T) {
 
 	require.NoError(t, err, "Getting Seth client shouldn't fail")
 	fmt.Printf("xxl 0013 vrfEnvConfig %v \n", vrfKey)
-	
+
 	t.Run("Link Billing", func(t *testing.T) {
 		configCopy := config.MustCopy().(tc.TestConfig)
 		var isNativeBilling = false
@@ -132,6 +131,11 @@ func TestVRFv2PlusM(t *testing.T) {
 
 		subBalanceBeforeRequest := subscription.Balance
 
+		fmt.Printf("xxl vrfv2plus.RequestRandomnessAndWaitForFulfillment consumers[0] %v \n", consumers[0])
+		fmt.Printf("xxl vrfv2plus.RequestRandomnessAndWaitForFulfillment CoordinatorV2Plus %v \n", vrfContracts.CoordinatorV2Plus)
+		fmt.Printf("xxl vrfv2plus.RequestRandomnessAndWaitForFulfillment vrfKey %v \n", vrfKey)
+		fmt.Printf("xxl vrfv2plus.RequestRandomnessAndWaitForFulfillment subIDForRequestRandomness %v \n", subIDForRequestRandomness)
+		fmt.Printf("xxl vrfv2plus.RequestRandomnessAndWaitForFulfillment consumers[0] %v \n", consumers[0])
 		// test and assert
 		_, randomWordsFulfilledEvent, err := vrfv2plus.RequestRandomnessAndWaitForFulfillment(
 			consumers[0],

@@ -380,6 +380,10 @@ func SetupVRFV2PlusUniverse(
 	} else {
 		fmt.Printf("xxl 0001 SetupVRFV2PlusUniverse  SetupVRFV2PlusForNewEnv \n")
 		vrfContracts, vrfKey, env, nodeTypeToNode, err = SetupVRFV2PlusForNewEnv(ctx, t, envConfig, newEnvConfig, l)
+		fmt.Printf("xxl 0001 SetupVRFV2PlusForNewEnv  vrfContracts %v \n", vrfContracts)
+		fmt.Printf("xxl 0001 SetupVRFV2PlusForNewEnv  vrfKey %v \n", vrfKey)
+		fmt.Printf("xxl 0001 SetupVRFV2PlusForNewEnv  nodeTypeToNode %v \n", nodeTypeToNode)
+
 		if err != nil {
 			return nil, nil, nil, nil, fmt.Errorf("%s, err: %w", "Error setting up VRF V2 Plus for New env", err)
 		}
@@ -411,6 +415,7 @@ func SetupVRFV2PlusForNewEnv(
 		return nil, nil, nil, nil, err
 	}
 
+	fmt.Printf("xxl 0001 contracts.DeployVRFMockETHLINKFeed network %v \n", big.NewInt(*envConfig.TestConfig.VRFv2Plus.General.LinkNativeFeedResponse))
 	mockETHLinkFeed, err := contracts.DeployVRFMockETHLINKFeed(sethClient, big.NewInt(*envConfig.TestConfig.VRFv2Plus.General.LinkNativeFeedResponse))
 	fmt.Printf("xxl 0002 SetupVRFV2PlusForNewEnv env %v \n", mockETHLinkFeed)
 	if err != nil {
